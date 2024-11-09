@@ -1,0 +1,58 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+-- Create the main frame for the UI
+local mainFrame = Instance.new("ScreenGui")
+mainFrame.Name = "FudgeyHubFrame"
+mainFrame.Parent = LocalPlayer.PlayerGui
+
+-- Create the background frame
+local backgroundFrame = Instance.new("Frame")
+backgroundFrame.Parent = mainFrame
+backgroundFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+backgroundFrame.BackgroundTransparency = 0.5 -- Adjust transparency as needed
+backgroundFrame.Position = UDim2.new(0.5, -200, 0.5, -100)
+backgroundFrame.Size = UDim2.new(0, 400, 0, 200)
+
+-- Make the frame draggable
+local userInputService = game:GetService("UserInputService")
+local dragging = false
+local dragStart, dragOffset = Vector2.new(), Vector2.new()
+
+backgroundFrame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        dragOffset = backgroundFrame.Position - UDim2.new(0, input.Position.X, 0, input.Position.Y)
+    end
+end)
+
+backgroundFrame.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+
+userInputService.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
+        local delta = input.Position - dragStart
+        backgroundFrame.Position = UDim2.new(0, dragOffset.X + delta.X, 0, dragOffset.Y + delta.Y)
+    end
+end)
+
+-- ... (Rest of the Fudgey Hub UI code)
+
+-- Create the close button
+local closeButton = Instance.new("TextButton")
+closeButton.Parent = backgroundFrame
+closeButton.Text = "X"
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.Position = UDim2.new(1, -20, 0, 0)
+closeButton.Size = UDim2.new(0, 20, 0, 20)
+
+closeButton.MouseButton1Click:Connect(function()
+    mainFrame:Destroy()
+end)
+
+-- ... (Rest of the teleport button and function code)
